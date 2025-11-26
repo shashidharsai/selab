@@ -27,10 +27,14 @@ pipeline {
         }
 
         stage('Test') {
-            steps {
-                sh 'pytest -q'
-            }
-        }
+    steps {
+        sh '''
+            export PATH=$PATH:/var/lib/jenkins/.local/bin
+            pytest -q
+        '''
+    }
+}
+
 
         stage('Build Docker') {
             steps {

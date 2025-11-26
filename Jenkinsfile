@@ -7,6 +7,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout([$class: 'GitSCM',
@@ -20,21 +21,16 @@ pipeline {
         }
 
         stage('Install') {
-        steps {
-            sh 'pip install --break-system-packages -r requirements.txt'
+            steps {
+                sh 'pip install --break-system-packages -r requirements.txt'
             }
         }
 
-
         stage('Test') {
-    steps {
-        sh '''
-            . venv/bin/activate
-            pytest -q
-        '''
-    }
-}
-
+            steps {
+                sh 'pytest -q'
+            }
+        }
 
         stage('Build Docker') {
             steps {
@@ -46,6 +42,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
                     usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+
                     sh '''
                         echo "$PASS" | docker login -u "$USER" --password-stdin
                         docker push ${DOCKER_IMAGE}:${TAG}

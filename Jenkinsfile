@@ -20,16 +20,26 @@ pipeline {
         }
 
         stage('Install') {
-            steps {
-                sh 'pip install -r requirements.txt'
+        steps {
+            sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+            '''
             }
         }
 
+
         stage('Test') {
-            steps {
-                sh 'pytest -q'
-            }
-        }
+    steps {
+        sh '''
+            . venv/bin/activate
+            pytest -q
+        '''
+    }
+}
+
 
         stage('Build Docker') {
             steps {
